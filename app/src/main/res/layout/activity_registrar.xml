@@ -10,6 +10,7 @@
         android:id="@+id/tbApellido"
         android:layout_width="295dp"
         android:layout_height="48dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Apellido"
         android:inputType="textPersonName"
@@ -17,12 +18,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tbNombre"
-        app:layout_constraintVertical_bias="0.060000002" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/tbCorreo"
         android:layout_width="295dp"
         android:layout_height="48dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Correo"
         android:inputType="textPersonName"
@@ -30,23 +32,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tbApellido"
-        app:layout_constraintVertical_bias="0.060000002" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvIniciarSesion"
         android:layout_width="240dp"
         android:layout_height="43dp"
+        android:layout_marginTop="8dp"
         android:text="Registro"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#FF425E"
         android:textSize="34sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintVertical_bias="0.18" />
 
     <EditText
         android:id="@+id/tbNombre"
@@ -66,6 +70,7 @@
         android:id="@+id/tbContrasena"
         android:layout_width="293dp"
         android:layout_height="48dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Contraseña"
         android:inputType="textPassword"
@@ -74,7 +79,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tbCorreo"
-        app:layout_constraintVertical_bias="0.060000002" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/botonRegistrar"
@@ -92,12 +97,13 @@
         android:id="@+id/ivIcono"
         android:layout_width="122dp"
         android:layout_height="114dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvIniciarSesion"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.485"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@mipmap/icono_principal" />
 
     <TextView
