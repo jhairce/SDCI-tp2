@@ -1,9 +1,11 @@
 package com.sdci.tp2
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.google.firebase.firestore.CollectionReference
@@ -11,10 +13,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
+@Suppress("DEPRECATION")
 class ConfigZonaControl : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_config_zona_control)
+
+        val btnConfirmarZona = findViewById<Button>(R.id.btnConfirmarZC)
+        val layout = layoutInflater.inflate(R.layout.custom_toast, null)
+        val txtToast = layout.findViewById<TextView>(R.id.tv_text)
+        val imgToast = layout.findViewById<ImageView>(R.id.iv_PtoControl)
 
         // Declaracion de las LISTAS donde se guardan los datos de los documentos
         val distritos: MutableList<String> = ArrayList()
@@ -134,8 +142,21 @@ class ConfigZonaControl : AppCompatActivity() {
                 }
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
+
             }
+        }
+
+        btnConfirmarZona.setOnClickListener {
+            Toast(this@ConfigZonaControl).apply {
+                duration = Toast.LENGTH_LONG
+                txtToast.text = "Exito. Se configuro la zona de control correctamente."
+                imgToast.setImageResource(R.drawable.toast_success)
+                setGravity(Gravity.FILL_HORIZONTAL, 0, 0)
+                view = layout
+            }.show()
+            // Enviar a usuario que inicia sesion a la actividad Main Activity.
+            startActivity(Intent(applicationContext, MainActivity::class.java))
+            finish()
         }
     }
 }
