@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "12880094043",
+    "project_id": "tp2-sdci",
+    "storage_bucket": "tp2-sdci.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12880094043:android:17aa42ff0989dccbaaf07e",
+        "android_client_info": {
+          "package_name": "com.sdci.tp2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12880094043-3mre8648art0nk4db182kcnna8heqhcd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sdci.tp2",
+            "certificate_hash": "9f27aa2657ddbe6b634728ee5a33caef1f7b5983"
+          }
+        },
+        {
+          "client_id": "12880094043-60u35cfj22k9d9m9vic42lm0n9ausfra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzWLpC-UBfgxTa8HVgacWNcsZH_xTmbjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12880094043-60u35cfj22k9d9m9vic42lm0n9ausfra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
