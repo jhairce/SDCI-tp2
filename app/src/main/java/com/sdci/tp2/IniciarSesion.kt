@@ -11,9 +11,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 @Suppress("DEPRECATION")
 class IniciarSesion : AppCompatActivity() {
@@ -21,31 +21,34 @@ class IniciarSesion : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_iniciar_sesion)
 
+        val auth = Firebase.auth
+        val fStore = Firebase.firestore
+        val sessionRef = fStore.collection("session")
+
+        // Si la sesion esta iniciada, mandar al usuario a la vista Main Activity.
+        if (auth.currentUser != null){
+            val currentuser = auth.currentUser?.uid.toString()
+            sessionRef.whereEqualTo("userId",currentuser).whereEqualTo("active",true).get().addOnSuccessListener {
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
+            }
+        //startActivity(Intent(applicationContext,ConfigZonaControl::class.java))
+        //finish()
+        }
+
+
         // Definicion de variables.
         val btnViewRegistrar = findViewById<TextView>(R.id.tvViewRegistrarse)
         val btnIniciarSesion = findViewById<Button>(R.id.botonIniciarSesion)
         val iCorreo = findViewById<EditText>(R.id.tbCorreo)
         val iContrasena = findViewById<EditText>(R.id.tbContrasena)
-        val auth: FirebaseAuth = FirebaseAuth.getInstance()
-        val fStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-        val sessionRef: CollectionReference = fStore.collection("session")
+
+
         val layout = layoutInflater.inflate(R.layout.custom_toast, null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
         val imgToast = layout.findViewById<ImageView>(R.id.iv_PtoControl)
 
-        // Si la sesion esta iniciada, mandar al usuario a la vista Main Activity.
-        if (auth.currentUser != null){
-            val currentuser: String = auth.currentUser?.uid.toString()
-            sessionRef.whereEqualTo("userId",currentuser).whereEqualTo("active",true).get().addOnCompleteListener{
-                if (it.isSuccessful){
-                    startActivity(Intent(applicationContext,MainActivity::class.java))
-                    finish()
-                } else{
-                    startActivity(Intent(applicationContext,ConfigZonaControl::class.java))
-                    finish()
-                }
-            }
-        }
+
 
         // Acciones cuando el usuario hace clic en boton "Registrate"
         btnViewRegistrar.setOnClickListener {

@@ -9,8 +9,11 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
@@ -60,9 +63,9 @@ class ConfigZonaControl : AppCompatActivity() {
         spinZonaControl.adapter = adaptadorZonaControl
 
         // Declaracion de las referencias necesarias en la creacion de esta vista
-        val fStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-        val ref1: CollectionReference = fStore.collection("districts")
-        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        val fStore = Firebase.firestore
+        val auth = Firebase.auth
+        val ref1 = fStore.collection("districts")
 
         // Obtener los Distritos y llenar el spinner correspondiente
         ref1.get().addOnSuccessListener { result ->
@@ -158,7 +161,6 @@ class ConfigZonaControl : AppCompatActivity() {
 
 
         btnConfirmarZona.setOnClickListener {
-
             // Crear la sesion combinando UID de usuario y Zona de Control
             // primero se captura el UID y la zcID
             val userID: String = auth.currentUser?.uid.toString()

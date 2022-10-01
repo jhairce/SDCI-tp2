@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConfigZonaControl">
+    tools:context=".CambiarZonaControl">
 
     <View
         android:id="@+id/div1"
@@ -30,17 +30,35 @@
         app:layout_constraintVertical_bias="0.100000024" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="122dp"
-        android:layout_height="114dp"
-        android:layout_marginTop="5dp"
-        android:contentDescription="Icono principal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_logout"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    <ImageView
+        android:id="@+id/btnMenuPrincipal"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        app:layout_constraintEnd_toStartOf="@+id/btnCerrarSesion"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_homescreen" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="59dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@mipmap/icono_principal" />
 
     <ImageView
@@ -58,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:text="Configurar Zona de Control"
+        android:text="Cambiar Zona de Control"
         android:textAlignment="gravity"
         android:textColor="#FE5757"
         android:textSize="24sp"
@@ -113,7 +131,7 @@
         android:id="@+id/btnConfirmarZC"
         android:layout_width="274dp"
         android:layout_height="55dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="16dp"
         android:enabled="false"
         android:text="Confirmar Zona de Control"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -138,8 +156,10 @@
         android:layout_width="320dp"
         android:layout_height="52dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="92dp"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"

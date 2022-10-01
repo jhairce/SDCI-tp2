@@ -101,7 +101,7 @@ class Registrar : AppCompatActivity() {
                         }
 
                         // Iniciar la nueva vista (ZonaControl) para el usuario una vez se registra
-                        startActivity(Intent(applicationContext,MainActivity::class.java))
+                        startActivity(Intent(applicationContext,ConfigZonaControl::class.java))
 
                         // Destruir vista actual
                         finish()
