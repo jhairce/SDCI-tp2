@@ -34,7 +34,7 @@ class ConfigZonaControl : AppCompatActivity() {
         val imgsControl: MutableList<String> = ArrayList()
 
         // Declaracion de la variable necesaria para sacar la referencia de FireStore
-        var idDistritoSeleccionado: String
+        var idDistritoSeleccionado = ""
         var idZCSeleccionada: String
         var indexDoc = 0
 
@@ -168,6 +168,7 @@ class ConfigZonaControl : AppCompatActivity() {
             val session = hashMapOf(
                 "userId" to userID,
                 "zonaId" to idZCSeleccionada,
+                "distId" to idDistritoSeleccionado,
                 "active" to true
             )
             sesionRef.add(session).addOnSuccessListener {
