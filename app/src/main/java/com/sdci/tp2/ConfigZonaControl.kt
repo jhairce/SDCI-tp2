@@ -26,7 +26,7 @@ class ConfigZonaControl : AppCompatActivity() {
         val btnConfirmarZona = findViewById<Button>(R.id.btnConfirmarZC)
         val layout = layoutInflater.inflate(R.layout.custom_toast, null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
-        val imgToast = layout.findViewById<ImageView>(R.id.iv_PtoControl)
+        val imgToast = layout.findViewById<ImageView>(R.id.iv_ToastIcon)
 
         // Declaracion de las LISTAS donde se guardan los datos de los documentos
         val distritos: MutableList<String> = ArrayList()

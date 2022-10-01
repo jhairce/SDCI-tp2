@@ -46,7 +46,7 @@ class IniciarSesion : AppCompatActivity() {
 
         val layout = layoutInflater.inflate(R.layout.custom_toast, null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
-        val imgToast = layout.findViewById<ImageView>(R.id.iv_PtoControl)
+        val imgToast = layout.findViewById<ImageView>(R.id.iv_ToastIcon)
 
 
 

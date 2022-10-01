@@ -7,10 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,6 +31,7 @@ class Registrar : AppCompatActivity() {
 
         val layout = layoutInflater.inflate(R.layout.custom_toast,null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
+        val imgToast = layout.findViewById<ImageView>(R.id.iv_ToastIcon)
 
         // Acciones cuando usuario hace clic en "Inicia sesion si ya tienes cuenta."
         btnViewIniciarSesion.setOnClickListener {
@@ -73,7 +71,8 @@ class Registrar : AppCompatActivity() {
                         Toast(this@Registrar).apply {
                             duration = Toast.LENGTH_SHORT
                             txtToast.text = "Exito! Se ha creado su cuenta correctamente."
-                            setGravity(Gravity.CENTER,0,0)
+                            imgToast.setImageResource(R.drawable.toast_success)
+                            setGravity(Gravity.FILL_HORIZONTAL,0,0)
                             view = layout
                         }.show()
 
