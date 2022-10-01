@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -34,6 +35,8 @@ class ConfigZonaControl : AppCompatActivity() {
 
         // Declaracion de la variable necesaria para sacar la referencia de FireStore
         var idDistritoSeleccionado: String
+        var idZCSeleccionada: String
+        var indexDoc = 0
 
         // Declaracion de las variables necesarias para mostrar la imagen
         var imgZonaControl: String
@@ -59,6 +62,7 @@ class ConfigZonaControl : AppCompatActivity() {
         // Declaracion de las referencias necesarias en la creacion de esta vista
         val fStore: FirebaseFirestore = FirebaseFirestore.getInstance()
         val ref1: CollectionReference = fStore.collection("districts")
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
         // Obtener los Distritos y llenar el spinner correspondiente
         ref1.get().addOnSuccessListener { result ->
@@ -127,10 +131,15 @@ class ConfigZonaControl : AppCompatActivity() {
         // Acciones al seleccionar una zona de control del spinner 2
         spinZonaControl.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                // Resetear la habilitacion del boton "Confirmar Zona Control"
+                if (spinZonaControl.selectedItemPosition == 0){
+                    btnConfirmarZona.isEnabled = false
+                }
                 // Validar que no se haga nada cuando la seleccion sea 0 (Item sintetico)
                 if (spinZonaControl.selectedItemPosition != 0) {
+                    btnConfirmarZona.isEnabled = true
                     // Declaracion de variable "indice" para diferenciar los documentos en las listas
-                    var indexDoc = spinZonaControl.selectedItemPosition-1
+                    indexDoc = spinZonaControl.selectedItemPosition-1
                     tPuntoControldeZona.text = ptsControl[indexDoc]
                     imgZonaControl = imgsControl[indexDoc]
                     val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imgZonaControl)
@@ -146,7 +155,28 @@ class ConfigZonaControl : AppCompatActivity() {
             }
         }
 
+
+
         btnConfirmarZona.setOnClickListener {
+
+            // Crear la sesion combinando UID de usuario y Zona de Control
+            // primero se captura el UID y la zcID
+            val userID: String = auth.currentUser?.uid.toString()
+            idZCSeleccionada = idsZonasControl[indexDoc]
+            val sesionRef: CollectionReference = fStore.collection("session")
+
+            val session = hashMapOf(
+                "userId" to userID,
+                "zonaId" to idZCSeleccionada,
+                "active" to true
+            )
+            sesionRef.add(session).addOnSuccessListener {
+                Log.d("success 4", "Se creo la sesion con el id: ${it.id}")
+            }.addOnFailureListener{
+                Log.d("failure 4", "No se creo la sesion por el error.", it)
+            }
+
+            // Toast de que se creo correctamente la sesion.
             Toast(this@ConfigZonaControl).apply {
                 duration = Toast.LENGTH_LONG
                 txtToast.text = "Exito. Se configuro la zona de control correctamente."
@@ -154,6 +184,9 @@ class ConfigZonaControl : AppCompatActivity() {
                 setGravity(Gravity.FILL_HORIZONTAL, 0, 0)
                 view = layout
             }.show()
+
+
+
             // Enviar a usuario que inicia sesion a la actividad Main Activity.
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()

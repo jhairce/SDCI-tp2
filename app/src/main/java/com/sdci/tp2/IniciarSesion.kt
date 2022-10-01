@@ -12,6 +12,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Suppress("DEPRECATION")
 class IniciarSesion : AppCompatActivity() {
@@ -24,15 +27,25 @@ class IniciarSesion : AppCompatActivity() {
         val btnIniciarSesion = findViewById<Button>(R.id.botonIniciarSesion)
         val iCorreo = findViewById<EditText>(R.id.tbCorreo)
         val iContrasena = findViewById<EditText>(R.id.tbContrasena)
-        var auth: FirebaseAuth = FirebaseAuth.getInstance()
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        val fStore: FirebaseFirestore = FirebaseFirestore.getInstance()
+        val sessionRef: CollectionReference = fStore.collection("session")
         val layout = layoutInflater.inflate(R.layout.custom_toast, null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
         val imgToast = layout.findViewById<ImageView>(R.id.iv_PtoControl)
 
         // Si la sesion esta iniciada, mandar al usuario a la vista Main Activity.
         if (auth.currentUser != null){
-            startActivity(Intent(applicationContext,ConfigZonaControl::class.java))
-            finish()
+            val currentuser: String = auth.currentUser?.uid.toString()
+            sessionRef.whereEqualTo("userId",currentuser).whereEqualTo("active",true).get().addOnCompleteListener{
+                if (it.isSuccessful){
+                    startActivity(Intent(applicationContext,MainActivity::class.java))
+                    finish()
+                } else{
+                    startActivity(Intent(applicationContext,ConfigZonaControl::class.java))
+                    finish()
+                }
+            }
         }
 
         // Acciones cuando el usuario hace clic en boton "Registrate"

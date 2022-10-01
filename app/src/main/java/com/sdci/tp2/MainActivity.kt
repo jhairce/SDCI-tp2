@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -14,37 +14,35 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val btnCerrarSesion = findViewById<Button>(R.id.botonCerrarSesion)
         val db = Firebase.firestore
-        val iCorreo = findViewById<TextView>(R.id.tvCorreo)
-        val iNombre = findViewById<TextView>(R.id.tvNombre)
-        val iApellido = findViewById<TextView>(R.id.tvApellido)
+        val iSessionId = findViewById<TextView>(R.id.tvSessionId)
+        val iUserId = findViewById<TextView>(R.id.tvUserID)
+        val iZonaId = findViewById<TextView>(R.id.tvZonaId)
+        var sessionId = ""
+
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        val currentuser: String = auth.currentUser?.uid.toString()
+        val docRef = db.collection("session")
 
-        val docRef = db.collection("users").document(auth.uid.toString())
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d("existe", "DocumentSnapshot data: ${document.data}")
+        docRef.whereEqualTo("userId",currentuser).whereEqualTo("active",true).get().addOnSuccessListener{ documents ->
+            for (document in documents){
+                Log.d("success 1","Se recupero la sesion. ${document.id} => ${document.data}")
+                sessionId = document.id
+                iSessionId.text = sessionId
+                iUserId.text = document.getString("userId")
+                iZonaId.text = document.getString("zonaId")
+            }
+        }
+        btnCerrarSesion.setOnClickListener {
 
-                    iCorreo.text = document.getString("correoUsuario")
-                    iNombre.text = document.getString("nombreUsuario")
-                    iApellido.text = document.getString("apellidoUsuario")
-
-
-                } else {
-                    Log.d("no existe", "No such document")
+            db.collection("session").document(sessionId).update("active",false)
+                .addOnSuccessListener {
+                    Log.d("successLogOut","Se modifico el estado de la sesion a false")
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("error de bd", "get failed with ", exception)
-            }
-
+            auth.signOut()
+            startActivity(Intent(applicationContext,IniciarSesion::class.java))
+            finish()
+        }
     }
-
-    fun logout(view: View) {
-        FirebaseAuth.getInstance().signOut()
-        startActivity(Intent(applicationContext,IniciarSesion::class.java))
-        finish()
-    }
-
 }

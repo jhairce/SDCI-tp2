@@ -19,7 +19,7 @@
         app:layout_constraintVertical_bias="0.939" />
 
     <TextView
-        android:id="@+id/tvCorreo"
+        android:id="@+id/tvSessionId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -31,7 +31,7 @@
         app:layout_constraintVertical_bias="0.147" />
 
     <TextView
-        android:id="@+id/tvNombre"
+        android:id="@+id/tvUserID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
@@ -40,11 +40,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.133"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCorreo"
+        app:layout_constraintTop_toBottomOf="@+id/tvSessionId"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tvApellido"
+        android:id="@+id/tvZonaId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -52,7 +52,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.133"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNombre"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserID"
         app:layout_constraintVertical_bias="0.082" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

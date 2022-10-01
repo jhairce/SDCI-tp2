@@ -114,6 +114,7 @@
         android:id="@+id/btnConfirmarZC"
         android:layout_width="274dp"
         android:layout_height="55dp"
+        android:enabled="false"
         android:text="Confirmar Zona de Control"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
