@@ -18,13 +18,10 @@ class VerAlertas : AppCompatActivity() {
         val auth = Firebase.auth
 
         val sessionId = intent.getStringExtra("SesionID").toString()
+        val zonaCtrlId = intent.getStringExtra("ZonaCtrlID").toString()
+
         val btnCerrarSesion = findViewById<ImageView>(R.id.btnCerrarSesion)
         val btnMenuPrincipal = findViewById<ImageView>(R.id.btnMenuPrincipal)
-
-
-
-
-
 
 
 

@@ -21,6 +21,7 @@ class IniciarSesion : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_iniciar_sesion)
 
+
         val auth = Firebase.auth
         val fStore = Firebase.firestore
         val sessionRef = fStore.collection("session")

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,13 +32,16 @@ class MainActivity : AppCompatActivity() {
         val intentCambiarZona = Intent(this@MainActivity,CambiarZonaControl::class.java)
         val intentFallos = Intent(this@MainActivity,ReportarFallos::class.java)
 
+        val msging = Firebase.messaging
         val db = Firebase.firestore
         var idDistrito = ""
         var idZonaControl = ""
         var sessionId = ""
 
+
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         val currentuser: String = auth.currentUser?.uid.toString()
+
 
         val docRef = db.collection("session")
 
@@ -50,9 +54,14 @@ class MainActivity : AppCompatActivity() {
                 idZonaControl = document.getString("zonaId").toString()
                 idDistrito = document.getString("distId").toString()
                 intentAlertas.putExtra("SesionID",sessionId)
+                intentAlertas.putExtra("ZonaCtrlID",idZonaControl)
                 intentReportes.putExtra("SesionID",sessionId)
                 intentCambiarZona.putExtra("SesionID",sessionId)
+                intentCambiarZona.putExtra("ZonaCtrlID",idZonaControl)
                 intentFallos.putExtra("SesionID",sessionId)
+                msging.subscribeToTopic(idZonaControl).addOnSuccessListener {
+                    Log.d("successNotif","Se subscribio correctamente al topico $idZonaControl")
+                }
             }
 
             db.collection("districts").document(idDistrito).get()
@@ -71,6 +80,9 @@ class MainActivity : AppCompatActivity() {
         btnCerrarSesion.setOnClickListener {
             db.collection("session").document(sessionId).update("active",false).addOnSuccessListener{
                     Log.d("successLogOut","Se modifico el estado de la sesion $sessionId a false")
+                    msging.unsubscribeFromTopic(sessionId).addOnSuccessListener {
+                        Log.d("successMsg","Se desuscribio del topico $idZonaControl.")
+                    }
                     auth.signOut()
                     startActivity(Intent(applicationContext,IniciarSesion::class.java))
                     finish()
@@ -94,9 +106,5 @@ class MainActivity : AppCompatActivity() {
         btnReportarFallos.setOnClickListener {
             startActivity(intentFallos)
         }
-    }
-    override fun onResume() {
-        super.onResume()
-
     }
 }

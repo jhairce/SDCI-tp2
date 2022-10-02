@@ -8,10 +8,8 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -27,6 +25,7 @@ class ConfigZonaControl : AppCompatActivity() {
         val layout = layoutInflater.inflate(R.layout.custom_toast, null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
         val imgToast = layout.findViewById<ImageView>(R.id.iv_ToastIcon)
+
 
         // Declaracion de las LISTAS donde se guardan los datos de los documentos
         val distritos: MutableList<String> = ArrayList()

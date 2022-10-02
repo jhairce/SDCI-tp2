@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
@@ -21,10 +22,18 @@ class CambiarZonaControl : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cambiar_zona_control)
 
+        val sessionId = intent.getStringExtra("SesionID").toString()
+        val zonaCtrlId = intent.getStringExtra("ZonaCtrlID").toString()
+
         val fStore = Firebase.firestore
         val auth = Firebase.auth
+        val msging = Firebase.messaging
 
-        val sessionId = intent.getStringExtra("SesionID").toString()
+        msging.unsubscribeFromTopic(zonaCtrlId).addOnSuccessListener {
+            Log.d("SuccessMsg","Se desuscribio del topico $zonaCtrlId correctamente")
+        }
+
+
         val btnCerrarSesion = findViewById<ImageView>(R.id.btnCerrarSesion)
         val btnMenuPrincipal = findViewById<ImageView>(R.id.btnMenuPrincipal)
 
@@ -184,6 +193,7 @@ class CambiarZonaControl : AppCompatActivity() {
 
 
         btnCerrarSesion.setOnClickListener{
+
             fStore.collection("session").document(sessionId).update("active",false).addOnSuccessListener{
                 Log.d("successLogOut","Se modifico el estado de la sesion $sessionId a false")
                 auth.signOut()
