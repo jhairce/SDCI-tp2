@@ -7,11 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 
 const val channelId = "notification_channel"
 const val channelName = "channel"
@@ -28,13 +27,13 @@ class ExtendedFirebaseMessagingService : FirebaseMessagingService() {
         }
 
     }
-    fun getRemoteView(title: String, message: String): RemoteViews{
+    /*fun getRemoteView(title: String, message: String): RemoteViews{
         val remoteView = RemoteViews("com.sdci.tp2",R.layout.notification)
         remoteView.setTextViewText(R.id.title,title)
         remoteView.setTextViewText(R.id.message,message)
         remoteView.setImageViewResource(R.id.appLogo,R.mipmap.icono_principal )
         return remoteView
-    }
+    }*/
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun generateNotification(title: String, message: String){
@@ -44,14 +43,16 @@ class ExtendedFirebaseMessagingService : FirebaseMessagingService() {
 
         val pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
 
-        var builder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, channelId)
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.mipmap.icono_principal)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000,1000,1000,1000))
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
+            .setContentTitle(title)
+            .setContentText(message)
 
-        builder = builder.setContent(getRemoteView(title,message))
+        //builder = builder.setContent(getRemoteView(title,message))
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -61,6 +62,7 @@ class ExtendedFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         notificationManager.notify(0,builder.build())
+
     }
 
 }

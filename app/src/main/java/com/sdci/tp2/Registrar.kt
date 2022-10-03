@@ -1,13 +1,13 @@
 package com.sdci.tp2
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -110,7 +110,7 @@ class Registrar : AppCompatActivity() {
                         Toast(this@Registrar).apply {
                             duration = Toast.LENGTH_SHORT
                             txtToast.text = "Error! No se ha creado su cuenta. Intentalo de nuevo en unos minutos."
-                            setGravity(Gravity.CENTER,0,0)
+                            setGravity(Gravity.FILL_HORIZONTAL,0,0)
                             view = layout
                         }.show()
                     }

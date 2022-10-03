@@ -2,25 +2,24 @@ package com.sdci.tp2
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import java.io.File
+import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 class VerAlertas : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
@@ -35,24 +34,28 @@ class VerAlertas : AppCompatActivity() {
         val sessionId = intent.getStringExtra("SesionID").toString()
         val zonaCtrlId = intent.getStringExtra("ZonaCtrlID").toString()
 
+        val layout = layoutInflater.inflate(R.layout.custom_toast, null)
+        val txtToast = layout.findViewById<TextView>(R.id.tv_text)
+        val imgToast = layout.findViewById<ImageView>(R.id.iv_ToastIcon)
+
         val idsAlertas: MutableList<String> = ArrayList()
         val horasAlertas: MutableList<Date> = ArrayList()
         val imgsAlertas: MutableList<String> = ArrayList()
         val intervAlertas: MutableList<Boolean?> = ArrayList()
 
-        var idAlertaActual: String
+        var idAlertaActual = ""
         var imgAlertaActual: String
         var horaAlertaActual: String
         var intervAlertaActual: Boolean?
 
         val formatter: DateFormat = SimpleDateFormat("HH:mm:ss")
-        var localfile: File = File.createTempFile("tempImage","jpg")
 
         var counter = 0
         var max = 0
 
         val btnCerrarSesion = findViewById<ImageView>(R.id.btnCerrarSesion)
         val btnMenuPrincipal = findViewById<ImageView>(R.id.btnMenuPrincipal)
+        val btnIntervencion = findViewById<Button>(R.id.btnIntervencion)
         val tvMax = findViewById<TextView>(R.id.tvMaximo)
         val tvConteo = findViewById<TextView>(R.id.tvConteo)
         val tvHora = findViewById<TextView>(R.id.tvHora)
@@ -60,6 +63,7 @@ class VerAlertas : AppCompatActivity() {
         val ivAlerta = findViewById<ImageView>(R.id.iv_Alerta)
         val btnPrevious = findViewById<Button>(R.id.btnPrevious)
         val btnNext = findViewById<Button>(R.id.btnNext)
+        val pbAlertas = findViewById<ProgressBar>(R.id.pbAlertas)
 
         fun cargarAlerta(count: Int){
             idAlertaActual = idsAlertas[count-1]
@@ -67,25 +71,17 @@ class VerAlertas : AppCompatActivity() {
             horaAlertaActual = formatter.format(horasAlertas[count-1])
             intervAlertaActual = intervAlertas[count-1]
 
-
-            btnPrevious.isEnabled = count != 1
-            btnNext.isEnabled = count != max
+            Picasso.get().load(imgAlertaActual).into(ivAlerta)
+            tvInterv.text = if (intervAlertaActual!!) "Si" else "No"
             tvConteo.text = count.toString()
             tvHora.text = horaAlertaActual
-            tvInterv.text = if (intervAlertaActual!!) "Si" else "No"
-            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imgAlertaActual)
-            storageRef.getFile(localfile).addOnSuccessListener {
-                val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
-                ivAlerta.setImageBitmap(bitmap)
-            }
+            btnIntervencion.isEnabled = !intervAlertaActual!!
+            btnPrevious.isEnabled = count != 1
+            btnNext.isEnabled = count != max
         }
 
         val ref: CollectionReference = db.collection("Alertas")
-        ref.orderBy("horaAlerta",Query.Direction.ASCENDING).get().addOnSuccessListener {
-            for (document in it) {
-                Log.d("successAlerta", "se recupero la data ${document.id} => ${document.data} ")
-            }
-        }.addOnCompleteListener {
+        ref.orderBy("horaAlerta",Query.Direction.ASCENDING).get().addOnCompleteListener {
             if (it.isSuccessful) {
                 for (document in it.result) {
                     idsAlertas.add(document.id)
@@ -96,36 +92,63 @@ class VerAlertas : AppCompatActivity() {
                 counter = idsAlertas.count()
                 max = counter
                 tvMax.text = counter.toString()
-
                 cargarAlerta(counter)
+                pbAlertas.visibility = View.GONE
             }
         }
 
 
         btnPrevious.setOnClickListener {
+            pbAlertas.visibility = View.VISIBLE
             counter--
             cargarAlerta(counter)
+            pbAlertas.visibility = View.GONE
         }
 
         btnNext.setOnClickListener {
+            pbAlertas.visibility = View.VISIBLE
             counter++
             cargarAlerta(counter)
+            pbAlertas.visibility = View.GONE
         }
 
         btnCerrarSesion.setOnClickListener{
             db.collection("session").document(sessionId).update("active",false).addOnSuccessListener{
-                    Log.d("successLogOut","Se modifico el estado de la sesion $sessionId a false")
                     auth.signOut()
                     startActivity(Intent(applicationContext,IniciarSesion::class.java))
                     finish()
             }
         }
+
         btnMenuPrincipal.setOnClickListener{
             finish()
         }
 
+        btnIntervencion.setOnClickListener{
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.intervencion_dialog,null)
+            val mBuilder = AlertDialog.Builder(this)
+                .setView(mDialogView)
+                .setTitle("Confirmacion")
+            val mAlertDialog = mBuilder.show()
+            mDialogView.findViewById<TextView>(R.id.tvTextoDialog).text = "Confirma que se ha realizado la intervención de la alerta mostrada?"
+            mDialogView.findViewById<Button>(R.id.btnCancelar).setOnClickListener{
+                mAlertDialog.dismiss()
+            }
+            mDialogView.findViewById<Button>(R.id.btnConfirmar).setOnClickListener{
+                db.collection("Alertas").document(idAlertaActual).update("intervencion",true).addOnSuccessListener{
+                    mAlertDialog.dismiss()
+                    Toast(this).apply {
+                        duration = Toast.LENGTH_LONG
+                        txtToast.text = "Exito! Se registró la intervención."
+                        imgToast.setImageResource(R.drawable.toast_success)
+                        setGravity(Gravity.FILL_HORIZONTAL, 0, 0)
+                        view = layout
+                    }.show()
+                    startActivity(Intent(applicationContext,VerAlertas::class.java))
+                    finish()
+                }
+            }
 
+        }
     }
-
-
 }

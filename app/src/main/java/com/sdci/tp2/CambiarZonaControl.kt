@@ -1,20 +1,18 @@
 package com.sdci.tp2
 
 import android.content.Intent
-import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
-import com.google.firebase.storage.FirebaseStorage
-import java.io.File
+import com.squareup.picasso.Picasso
 
 @Suppress("DEPRECATION")
 class CambiarZonaControl : AppCompatActivity() {
@@ -57,7 +55,6 @@ class CambiarZonaControl : AppCompatActivity() {
 
         // Declaracion de las variables necesarias para mostrar la imagen
         var imgZonaControl: String
-        var localfile: File
 
         // Declaracion de los objetos que cambian su contenido basado en las elecciones de usuario
         val tPuntoControldeZona = findViewById<TextView>(R.id.tvDistrito)
@@ -156,12 +153,7 @@ class CambiarZonaControl : AppCompatActivity() {
                     indexDoc = spinZonaControl.selectedItemPosition-1
                     tPuntoControldeZona.text = ptsControl[indexDoc]
                     imgZonaControl = imgsControl[indexDoc]
-                    val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imgZonaControl)
-                    localfile = File.createTempFile("tempImage","jpg")
-                    storageRef.getFile(localfile).addOnSuccessListener {
-                        val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
-                        imPtoCtrldeZona.setImageBitmap(bitmap)
-                    }
+                    Picasso.get().load(imgZonaControl).into(imPtoCtrldeZona)
                 }
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {

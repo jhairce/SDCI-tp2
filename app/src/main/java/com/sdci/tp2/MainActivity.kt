@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         // Definicion de objetos de la vista
         val btnCerrarSesion = findViewById<ImageView>(R.id.btnCerrarSesion)
         val tvDistrito = findViewById<TextView>(R.id.tvShowDistrito)
@@ -27,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         val btnReportes = findViewById<Button>(R.id.btnReportes)
         val btnCambiarZona = findViewById<Button>(R.id.btnCambiarZona)
         val btnReportarFallos = findViewById<Button>(R.id.btnReportarFallos)
-
 
         val intentAlertas = Intent(this@MainActivity, VerAlertas::class.java)
         val intentReportes = Intent(this@MainActivity, GenerarReportes::class.java)
@@ -79,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                     }
             }
 
-
         btnCerrarSesion.setOnClickListener {
             db.collection("session").document(sessionId).update("active", false)
                 .addOnSuccessListener {
@@ -92,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                     finish()
                 }
         }
-
 
         btnAlertas.setOnClickListener {
             startActivity(intentAlertas)
@@ -111,20 +107,4 @@ class MainActivity : AppCompatActivity() {
             startActivity(intentFallos)
         }
     }
-
-   /* private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val mChannel = NotificationChannel(channelid, name, importance)
-            mChannel.description = descriptionText
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(mChannel)
-        }
-    }*/
-
 }
