@@ -22,6 +22,8 @@ class IniciarSesion : AppCompatActivity() {
         val fStore = Firebase.firestore
         val sessionRef = fStore.collection("session")
 
+        auth.signOut()
+
         // Si la sesion esta iniciada, mandar al usuario a la vista Main Activity.
         if (auth.currentUser != null){
             val currentuser = auth.currentUser?.uid.toString()

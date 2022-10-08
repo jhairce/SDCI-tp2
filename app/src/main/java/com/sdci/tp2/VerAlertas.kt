@@ -35,6 +35,8 @@ class VerAlertas : AppCompatActivity() {
         val sessionId = intent.getStringExtra("SesionID").toString()
         val zonaCtrlId = intent.getStringExtra("ZonaCtrlID").toString()
 
+        val intentAlertas = Intent(this, VerAlertas::class.java)
+
         val layout = layoutInflater.inflate(R.layout.custom_toast, null)
         val txtToast = layout.findViewById<TextView>(R.id.tv_text)
         val imgToast = layout.findViewById<ImageView>(R.id.iv_ToastIcon)
@@ -157,7 +159,10 @@ class VerAlertas : AppCompatActivity() {
                         setGravity(Gravity.FILL_HORIZONTAL, 0, 0)
                         view = layout
                     }.show()
-                    startActivity(Intent(applicationContext,VerAlertas::class.java))
+
+                    intentAlertas.putExtra("SesionID", sessionId)
+                    intentAlertas.putExtra("ZonaCtrlID", zonaCtrlId)
+                    startActivity(intentAlertas)
                     finish()
                 }
             }

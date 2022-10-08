@@ -77,7 +77,7 @@ class Registrar : AppCompatActivity() {
                     return
                 }
                 // Validacion: contraseña corta.
-                if (contrasena.length < 7){
+                if (contrasena.length < 8){
                     iContrasena.error = "Contraseña debe contener minimo 8 caracteres."
                     iContrasena.requestFocus()
                     return
