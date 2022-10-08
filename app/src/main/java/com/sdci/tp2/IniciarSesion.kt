@@ -15,10 +15,9 @@ import com.google.firebase.ktx.Firebase
 @Suppress("DEPRECATION")
 class IniciarSesion : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_iniciar_sesion)
-
-
         val auth = Firebase.auth
         val fStore = Firebase.firestore
         val sessionRef = fStore.collection("session")
