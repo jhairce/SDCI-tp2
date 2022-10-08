@@ -80,10 +80,7 @@ class MainActivity : AppCompatActivity() {
         btnCerrarSesion.setOnClickListener {
             db.collection("session").document(sessionId).update("active", false)
                 .addOnSuccessListener {
-                    Log.d("successLogOut", "Se modifico el estado de la sesion $sessionId a false")
-                    msging.unsubscribeFromTopic(sessionId).addOnSuccessListener {
-                        Log.d("successMsg", "Se desuscribio del topico $idZonaControl.")
-                    }
+                    msging.unsubscribeFromTopic(sessionId)
                     auth.signOut()
                     startActivity(Intent(applicationContext, IniciarSesion::class.java))
                     finish()

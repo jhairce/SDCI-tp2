@@ -12,10 +12,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -30,6 +30,7 @@ class VerAlertas : AppCompatActivity() {
 
         val db = Firebase.firestore
         val auth = Firebase.auth
+        val msging = Firebase.messaging
 
         val sessionId = intent.getStringExtra("SesionID").toString()
         val zonaCtrlId = intent.getStringExtra("ZonaCtrlID").toString()
@@ -60,6 +61,7 @@ class VerAlertas : AppCompatActivity() {
         val tvConteo = findViewById<TextView>(R.id.tvConteo)
         val tvHora = findViewById<TextView>(R.id.tvHora)
         val tvInterv = findViewById<TextView>(R.id.tvIntervenido)
+        val tvNoAlertas = findViewById<TextView>(R.id.tvNoAlertas)
         val ivAlerta = findViewById<ImageView>(R.id.iv_Alerta)
         val btnPrevious = findViewById<Button>(R.id.btnPrevious)
         val btnNext = findViewById<Button>(R.id.btnNext)
@@ -80,20 +82,30 @@ class VerAlertas : AppCompatActivity() {
             btnNext.isEnabled = count != max
         }
 
-        val ref: CollectionReference = db.collection("Alertas")
+        val ref = db.collection("Alertas").whereEqualTo("idZonaControl",zonaCtrlId)
         ref.orderBy("horaAlerta",Query.Direction.ASCENDING).get().addOnCompleteListener {
             if (it.isSuccessful) {
-                for (document in it.result) {
-                    idsAlertas.add(document.id)
-                    imgsAlertas.add(document.getString("imgDownloadURL").toString())
-                    horasAlertas.add(document.getTimestamp("horaAlerta")!!.toDate())
-                    intervAlertas.add(document.getBoolean("intervencion"))
+                if (it.result.isEmpty){
+                    tvNoAlertas.visibility = View.VISIBLE
+                    counter = 0
+                    tvMax.text = counter.toString()
+                    pbAlertas.visibility = View.GONE
+                    btnPrevious.isEnabled = false
+                    btnNext.isEnabled = false
+                    btnIntervencion.isEnabled = false
+                } else {
+                    for (document in it.result) {
+                        idsAlertas.add(document.id)
+                        imgsAlertas.add(document.getString("imgDownloadURL").toString())
+                        horasAlertas.add(document.getTimestamp("horaAlerta")!!.toDate())
+                        intervAlertas.add(document.getBoolean("intervencion"))
+                    }
+                    counter = idsAlertas.count()
+                    max = counter
+                    tvMax.text = counter.toString()
+                    cargarAlerta(counter)
+                    pbAlertas.visibility = View.GONE
                 }
-                counter = idsAlertas.count()
-                max = counter
-                tvMax.text = counter.toString()
-                cargarAlerta(counter)
-                pbAlertas.visibility = View.GONE
             }
         }
 
@@ -114,9 +126,10 @@ class VerAlertas : AppCompatActivity() {
 
         btnCerrarSesion.setOnClickListener{
             db.collection("session").document(sessionId).update("active",false).addOnSuccessListener{
-                    auth.signOut()
-                    startActivity(Intent(applicationContext,IniciarSesion::class.java))
-                    finish()
+                msging.unsubscribeFromTopic(sessionId)
+                auth.signOut()
+                startActivity(Intent(applicationContext, IniciarSesion::class.java))
+                finish()
             }
         }
 

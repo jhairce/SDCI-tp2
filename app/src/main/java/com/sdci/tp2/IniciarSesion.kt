@@ -1,16 +1,13 @@
 package com.sdci.tp2
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Patterns
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -41,6 +38,7 @@ class IniciarSesion : AppCompatActivity() {
         // Definicion de variables.
         val btnViewRegistrar = findViewById<TextView>(R.id.tvViewRegistrarse)
         val btnIniciarSesion = findViewById<Button>(R.id.botonIniciarSesion)
+        val tvResetearContrasena = findViewById<TextView>(R.id.tvRecuperarContrasena)
         val iCorreo = findViewById<EditText>(R.id.tbCorreo)
         val iContrasena = findViewById<EditText>(R.id.tbContrasena)
 
@@ -57,6 +55,10 @@ class IniciarSesion : AppCompatActivity() {
             finish()
         }
 
+        tvResetearContrasena.setOnClickListener{
+            startActivity(Intent(applicationContext,ResetearContrasena::class.java))
+        }
+
         // Acciones cuando el usuario hace clic en boton "Iniciar sesion"
         btnIniciarSesion.setOnClickListener(object: View.OnClickListener {
             override fun onClick(v:View){
@@ -68,18 +70,26 @@ class IniciarSesion : AppCompatActivity() {
                 // Validacion: Campo correo vacio.
                 if(TextUtils.isEmpty(correo)){
                     iCorreo.error = ("Se requiere ingresar un correo.")
+                    iCorreo.requestFocus()
                     return
                 }
 
+                if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()){
+                    iCorreo.error = "Por favor, ingrease un correo valido."
+                    iCorreo.requestFocus()
+                    return
+                }
                 // Validacion: Campo contraseña vacia.
                 if(TextUtils.isEmpty(contrasena)){
                     iContrasena.error = "Se requiere ingreasar una contraseña."
+                    iContrasena.requestFocus()
                     return
                 }
 
                 // Validacion: contraseña corta.
                 if (contrasena.length < 7){
                     iContrasena.error = "Contraseña debe contener minimo 8 caracteres."
+                    iContrasena.requestFocus()
                     return
                 }
 

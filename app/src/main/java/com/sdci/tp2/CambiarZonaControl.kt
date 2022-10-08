@@ -185,9 +185,7 @@ class CambiarZonaControl : AppCompatActivity() {
 
 
         btnCerrarSesion.setOnClickListener{
-
             fStore.collection("session").document(sessionId).update("active",false).addOnSuccessListener{
-                Log.d("successLogOut","Se modifico el estado de la sesion $sessionId a false")
                 auth.signOut()
                 startActivity(Intent(applicationContext,IniciarSesion::class.java))
                 finish()

@@ -73,7 +73,7 @@
         android:layout_width="150dp"
         android:layout_height="180dp"
         android:layout_marginEnd="40dp"
-        android:text="Generar reportes"
+        android:text="Ver reportes diarios"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

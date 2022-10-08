@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -48,22 +49,39 @@ class Registrar : AppCompatActivity() {
                 val nombre = iNombre.text.toString().trim()
                 val apellido = iApellido.text.toString().trim()
 
-                // Validacion: Campo correo vacio.
+                // Validaciones: Campo correo vacio.
+                if (TextUtils.isEmpty(nombre)){
+                    iNombre.error = "Debe ingresar su nombre."
+                    iNombre.requestFocus()
+                    return
+                }
+                if (TextUtils.isEmpty(apellido)){
+                    iApellido.error = "Debe ingresar su apellido."
+                    iApellido.requestFocus()
+                    return
+                }
                 if(TextUtils.isEmpty(correo)){
                     iCorreo.error = "Se requiere ingresar un correo."
+                    iCorreo.requestFocus()
+                    return
+                }
+                if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()){
+                    iCorreo.error = "Por favor, ingrease un correo valido."
+                    iCorreo.requestFocus()
                     return
                 }
                 // Validacion: Campo contraseña vacia.
                 if(TextUtils.isEmpty(contrasena)){
                     iContrasena.error = "Se requiere ingresar una contraseña."
+                    iContrasena.requestFocus()
                     return
                 }
                 // Validacion: contraseña corta.
                 if (contrasena.length < 7){
                     iContrasena.error = "Contraseña debe contener minimo 8 caracteres."
+                    iContrasena.requestFocus()
                     return
                 }
-
 
                 // Registrar usuario en FB Auth y luego registrarlo en FB Firestore
                 auth.createUserWithEmailAndPassword(correo,contrasena).addOnCompleteListener(this@Registrar) {task ->
@@ -109,7 +127,7 @@ class Registrar : AppCompatActivity() {
                         // Toast de error de creacion de cuenta
                         Toast(this@Registrar).apply {
                             duration = Toast.LENGTH_SHORT
-                            txtToast.text = "Error! No se ha creado su cuenta. Intentalo de nuevo en unos minutos."
+                            txtToast.text = "Error! Ya existe una cuenta con ese correo. Ve a la opcion de Olvidaste tu Contraseña. "
                             setGravity(Gravity.FILL_HORIZONTAL,0,0)
                             view = layout
                         }.show()
