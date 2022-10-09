@@ -1,9 +1,9 @@
 package com.sdci.tp2
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class VerAlertas : AppCompatActivity() {
-    @SuppressLint("SimpleDateFormat")
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +32,8 @@ class VerAlertas : AppCompatActivity() {
         val auth = Firebase.auth
         val msging = Firebase.messaging
 
-        val sessionId = intent.getStringExtra("SesionID").toString()
-        val zonaCtrlId = intent.getStringExtra("ZonaCtrlID").toString()
+        var sessionId = ""
+        var zonaCtrlId = ""
 
         val intentAlertas = Intent(this, VerAlertas::class.java)
 
@@ -84,32 +84,42 @@ class VerAlertas : AppCompatActivity() {
             btnNext.isEnabled = count != max
         }
 
-        val ref = db.collection("Alertas").whereEqualTo("idZonaControl",zonaCtrlId)
-        ref.orderBy("horaAlerta",Query.Direction.ASCENDING).get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                if (it.result.isEmpty){
-                    tvNoAlertas.visibility = View.VISIBLE
-                    counter = 0
-                    tvMax.text = counter.toString()
-                    pbAlertas.visibility = View.GONE
-                    btnPrevious.isEnabled = false
-                    btnNext.isEnabled = false
-                    btnIntervencion.isEnabled = false
-                } else {
-                    for (document in it.result) {
-                        idsAlertas.add(document.id)
-                        imgsAlertas.add(document.getString("imgDownloadURL").toString())
-                        horasAlertas.add(document.getTimestamp("horaAlerta")!!.toDate())
-                        intervAlertas.add(document.getBoolean("intervencion"))
+
+        db.collection("session").whereEqualTo("userId", auth.currentUser?.uid).whereEqualTo("active", true).get()
+            .addOnSuccessListener { documents ->
+                Log.d("LISTENER","user is: ${auth.currentUser?.uid} ")
+                for (document in documents) {
+                    zonaCtrlId = document.getString("zonaId").toString()
+                    sessionId = document.id
+                }
+                val ref = db.collection("Alertas").whereEqualTo("idZonaControl",zonaCtrlId)
+                ref.orderBy("horaAlerta", Query.Direction.ASCENDING).get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        if (it.result.isEmpty){
+                            tvNoAlertas.visibility = View.VISIBLE
+                            counter = 0
+                            tvMax.text = counter.toString()
+                            pbAlertas.visibility = View.GONE
+                            btnPrevious.isEnabled = false
+                            btnNext.isEnabled = false
+                            btnIntervencion.isEnabled = false
+                        } else {
+                            for (document in it.result) {
+                                idsAlertas.add(document.id)
+                                imgsAlertas.add(document.getString("imgDownloadURL").toString())
+                                horasAlertas.add(document.getTimestamp("horaAlerta")!!.toDate())
+                                intervAlertas.add(document.getBoolean("intervencion"))
+                            }
+                            counter = idsAlertas.count()
+                            max = counter
+                            tvMax.text = counter.toString()
+                            cargarAlerta(counter)
+                            pbAlertas.visibility = View.GONE
+                        }
                     }
-                    counter = idsAlertas.count()
-                    max = counter
-                    tvMax.text = counter.toString()
-                    cargarAlerta(counter)
-                    pbAlertas.visibility = View.GONE
                 }
             }
-        }
+
 
 
         btnPrevious.setOnClickListener {

@@ -123,6 +123,8 @@
         android:layout_height="77dp"
         android:layout_marginTop="36dp"
         android:text="Nota: Los reportes se generan diariamente a la misma hora (11:55 PM). Para visualizar el reporte de hoy debera esperar a que se haya generado. "
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"

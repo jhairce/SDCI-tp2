@@ -1,5 +1,6 @@
 package com.sdci.tp2
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +14,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,16 +27,17 @@ class MainActivity : AppCompatActivity() {
         val btnCambiarZona = findViewById<Button>(R.id.btnCambiarZona)
         val btnReportarFallos = findViewById<Button>(R.id.btnReportarFallos)
 
-        val intentAlertas = Intent(this@MainActivity, VerAlertas::class.java)
-        val intentReportes = Intent(this@MainActivity, GenerarReportes::class.java)
-        val intentCambiarZona = Intent(this@MainActivity, CambiarZonaControl::class.java)
-        val intentFallos = Intent(this@MainActivity, ReportarFallos::class.java)
+        val intentAlertas = Intent(this, VerAlertas::class.java)
+        val intentReportes = Intent(this, GenerarReportes::class.java)
+        val intentCambiarZona = Intent(this, CambiarZonaControl::class.java)
+        val intentFallos = Intent(this, ReportarFallos::class.java)
 
         val msging = Firebase.messaging
         val db = Firebase.firestore
         var idDistrito = ""
         var idZonaControl = ""
         var sessionId = ""
+
 
         val auth: FirebaseAuth = FirebaseAuth.getInstance()
         val currentuser: String = auth.currentUser?.uid.toString()
@@ -50,12 +51,15 @@ class MainActivity : AppCompatActivity() {
                     sessionId = document.id
                     idZonaControl = document.getString("zonaId").toString()
                     idDistrito = document.getString("distId").toString()
+
                     intentAlertas.putExtra("SesionID", sessionId)
                     intentAlertas.putExtra("ZonaCtrlID", idZonaControl)
                     intentReportes.putExtra("SesionID", sessionId)
                     intentCambiarZona.putExtra("SesionID", sessionId)
                     intentCambiarZona.putExtra("ZonaCtrlID", idZonaControl)
                     intentFallos.putExtra("SesionID", sessionId)
+                    val intentPendingAlertas = PendingIntent.getActivity(this,0, intentAlertas,PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+
                     msging.subscribeToTopic(idZonaControl).addOnSuccessListener {
                         Log.d(
                             "successNotif",

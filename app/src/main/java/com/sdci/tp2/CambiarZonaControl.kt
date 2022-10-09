@@ -27,11 +27,6 @@ class CambiarZonaControl : AppCompatActivity() {
         val auth = Firebase.auth
         val msging = Firebase.messaging
 
-        msging.unsubscribeFromTopic(zonaCtrlId).addOnSuccessListener {
-            Log.d("SuccessMsg","Se desuscribio del topico $zonaCtrlId correctamente")
-        }
-
-
         val btnCerrarSesion = findViewById<ImageView>(R.id.btnCerrarSesion)
         val btnMenuPrincipal = findViewById<ImageView>(R.id.btnMenuPrincipal)
 
@@ -165,22 +160,19 @@ class CambiarZonaControl : AppCompatActivity() {
             // Modificar la sesion. Ya se obtiene SessionId de la vista anterior
             idZCSeleccionada = idsZonasControl[indexDoc]
             fStore.collection("session").document(sessionId).update("distId",idDistritoSeleccionado,"zonaId",idZCSeleccionada).addOnSuccessListener {
-                Log.d("successCambio","Se cambio la sesion con id")
+                msging.unsubscribeFromTopic(zonaCtrlId)
+                Toast(this@CambiarZonaControl).apply {
+                    duration = Toast.LENGTH_LONG
+                    txtToast.text = "Exito. Se cambio la zona de control correctamente."
+                    imgToast.setImageResource(R.drawable.toast_success)
+                    setGravity(Gravity.FILL_HORIZONTAL, 0, 0)
+                    view = layout
+                }.show()
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
             }.addOnFailureListener{
                 Log.d("FailureCambio","No se cambio la sesion")
             }
-
-            Toast(this@CambiarZonaControl).apply {
-                duration = Toast.LENGTH_LONG
-                txtToast.text = "Exito. Se cambio la zona de control correctamente."
-                imgToast.setImageResource(R.drawable.toast_success)
-                setGravity(Gravity.FILL_HORIZONTAL, 0, 0)
-                view = layout
-            }.show()
-
-            // Enviar a usuario a la actividad Menu Principal.
-            startActivity(Intent(applicationContext, MainActivity::class.java))
-            finish()
         }
 
 
